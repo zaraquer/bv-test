@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-nginx
+  labels:
+    app: hello-world
+spec:
+  type: LoadBalancer
+  selector:
+    app: hello-world
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+  labels:
+    app: hello-world
+spec:
+  replicas: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+     restartPolicy: Always
+     containers:
+       - name: hello-world
+         image: hello-world:latest
+         ports:
+           - containerPort: 80
+             name: http
+         imagePullPolicy: Never
