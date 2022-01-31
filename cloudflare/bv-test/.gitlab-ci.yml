@@ -1,0 +1,9 @@
+stages:
+  - deploy
+
+deploy-static-site
+  stage: deploy
+  only: master
+  script:
+    - hugo -D
+    - wrangler publish
