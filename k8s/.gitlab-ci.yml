@@ -1,0 +1,27 @@
+stages:
+  - minikube-deploy
+  - docker-image-build
+  - deploy
+
+deploy-minikube:
+  stage: minikube-deploy
+  only:
+    - master
+  script:
+    - minikube start
+    - minikube addons enable metallb
+    - minikube addons enable metrics-server
+    - eval $(minikube docker-env) # Because we have want to deploy our local docker image
+
+deploy-docker-image:
+  stage: docker-image-build
+  script:
+    - docker build -t hello-world .
+
+deploy:
+  stage: deploy
+  script:
+    - alias kubectl="minikube kubectl --"
+    - kubectl create -f config-map.yaml
+    - kubectl apply -f deployment.yaml
+    - kubectl autoscale deployment hello-world --cpu-percent=50 --min=1 --max=10
