@@ -1,0 +1,4 @@
+baseURL = 'http://frosty-dust-f4b8.zaraquer.workers.dev'
+languageCode = 'en-us'
+title = 'bv-test site'
+theme = "ananke"
